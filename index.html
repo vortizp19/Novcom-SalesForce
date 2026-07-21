@@ -1,0 +1,2381 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Novcom Salesforce | Asistente Comercial y Financiero</title>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* ==========================================================================
+           1. SISTEMA DE DISEÑO Y VARIABLES (FINTECH DARK THEME)
+           ========================================================================== */
+        :root {
+            --bg-main: #0B0F17;
+            --bg-card: #141C2D;
+            --bg-card-hover: #1A253B;
+            --bg-input: #0F1623;
+            --bg-modal: #111827;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --border-color-glow: rgba(59, 130, 246, 0.4);
+            
+            --accent-blue: #3B82F6;
+            --accent-blue-hover: #2563EB;
+            --accent-cyan: #06B6D4;
+            --accent-emerald: #10B981;
+            --accent-amber: #F59E0B;
+            --accent-rose: #EF4444;
+
+            --text-primary: #F8FAFC;
+            --text-secondary: #94A3B8;
+            --text-muted: #64748B;
+            
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.2);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3);
+            --shadow-glow: 0 0 20px rgba(59, 130, 246, 0.15);
+            
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 16px;
+            --radius-full: 9999px;
+            
+            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        /* ==========================================================================
+           2. RESET Y ESTILOS BASE
+           ========================================================================== */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            line-height: 1.5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        input, select, textarea, button {
+            font-family: inherit;
+            font-size: 0.95rem;
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-main);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1E293B;
+            border-radius: var(--radius-full);
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #334155;
+        }
+
+        /* ==========================================================================
+           3. LAYOUT PRINCIPAL Y NAVEGACIÓN
+           ========================================================================== */
+        .app-header {
+            background-color: rgba(20, 28, 45, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 0.75rem 2rem;
+        }
+
+        .header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
+        }
+
+        .brand-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            color: var(--text-primary);
+        }
+
+        .logo-icon {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.2rem;
+            color: #ffffff;
+            box-shadow: 0 0 12px rgba(6, 182, 212, 0.4);
+        }
+
+        .brand-text h1 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            line-height: 1.1;
+        }
+
+        .brand-text span {
+            font-size: 0.75rem;
+            color: var(--accent-cyan);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .main-nav {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(15, 22, 35, 0.7);
+            padding: 0.35rem;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+        }
+
+        .nav-btn {
+            background: transparent;
+            color: var(--text-secondary);
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-btn:hover {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-btn.active {
+            background: linear-gradient(135deg, var(--accent-blue), #2563EB);
+            color: #ffffff;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: var(--bg-card);
+            padding: 0.4rem 0.8rem;
+            border-radius: var(--radius-full);
+            border: 1px solid var(--border-color);
+        }
+
+        .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #4F46E5, #7C3AED);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.85rem;
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+            line-height: 1.1;
+        }
+
+        .user-role {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        .logout-btn {
+            background: transparent;
+            color: var(--text-muted);
+            padding: 0.3rem;
+            border-radius: var(--radius-sm);
+        }
+
+        .logout-btn:hover {
+            color: var(--accent-rose);
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        /* Content Container */
+        .app-main {
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 2rem;
+            flex: 1;
+        }
+
+        /* Top Metrics Banner */
+        .metrics-banner {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+
+        .metric-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .metric-card:hover {
+            border-color: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--accent-blue);
+        }
+
+        .metric-card.emerald::before { background: var(--accent-emerald); }
+        .metric-card.cyan::before { background: var(--accent-cyan); }
+        .metric-card.amber::before { background: var(--accent-amber); }
+
+        .metric-data span {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .metric-data h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-top: 0.25rem;
+            letter-spacing: -0.5px;
+        }
+
+        .metric-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-md);
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            color: var(--accent-blue);
+        }
+
+        .metric-card.emerald .metric-icon { color: var(--accent-emerald); }
+        .metric-card.cyan .metric-icon { color: var(--accent-cyan); }
+        .metric-card.amber .metric-icon { color: var(--accent-amber); }
+
+        /* ==========================================================================
+           4. VISTAS Y SECCIONES (SPA)
+           ========================================================================== */
+        .view-section {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .view-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Section Titles */
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .section-title h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .section-title p {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        /* Card Styles */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.25rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .card-header h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Forms Grid */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1.25rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        input, select, textarea {
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 0.65rem 0.9rem;
+            border-radius: var(--radius-md);
+            transition: var(--transition);
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+
+        input[readonly] {
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--accent-cyan);
+            font-weight: 600;
+            cursor: not-allowed;
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .input-prefix, .input-suffix {
+            position: absolute;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.9rem;
+            pointer-events: none;
+        }
+
+        .input-prefix { left: 0.9rem; }
+        .input-suffix { right: 0.9rem; }
+
+        .has-prefix { padding-left: 2rem; }
+        .has-suffix { padding-right: 2.2rem; }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.65rem 1.25rem;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-blue), #2563EB);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #2563EB, #1D4ED8);
+            box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+            transform: translateY(-1px);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--accent-emerald), #059669);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-success:hover {
+            background: linear-gradient(135deg, #059669, #047857);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-outline-cyan {
+            background: transparent;
+            color: var(--accent-cyan);
+            border: 1px solid var(--accent-cyan);
+        }
+
+        .btn-outline-cyan:hover {
+            background: rgba(6, 182, 212, 0.1);
+        }
+
+        .btn-sm {
+            padding: 0.4rem 0.75rem;
+            font-size: 0.8rem;
+            border-radius: var(--radius-sm);
+        }
+
+        /* Toggle Switch */
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: var(--bg-input);
+            padding: 0.65rem 1rem;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+        }
+
+        .toggle-switch {
+            width: 44px;
+            height: 24px;
+            background: #334155;
+            border-radius: var(--radius-full);
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+
+        input[type="checkbox"]:checked + .toggle-switch {
+            background: var(--accent-blue);
+        }
+
+        input[type="checkbox"]:checked + .toggle-switch::after {
+            transform: translateX(20px);
+        }
+
+        /* Dynamic Financial Summary Box */
+        .financial-summary {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9));
+            border: 1px solid var(--border-color-glow);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            box-shadow: var(--shadow-glow);
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1.5rem;
+            text-align: center;
+        }
+
+        .summary-item label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
+        }
+
+        .summary-item .value {
+            font-size: 1.4rem;
+            font-weight: 800;
+            margin-top: 0.2rem;
+        }
+
+        .value.highlight-cyan { color: var(--accent-cyan); }
+        .value.highlight-emerald { color: var(--accent-emerald); }
+        .value.highlight-blue { color: var(--accent-blue); }
+
+        /* Tables */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.875rem;
+        }
+
+        .data-table th {
+            background: #0F1623;
+            color: var(--text-secondary);
+            font-weight: 600;
+            padding: 0.9rem 1rem;
+            border-bottom: 1px solid var(--border-color);
+            white-space: nowrap;
+        }
+
+        .data-table td {
+            padding: 0.85rem 1rem;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .data-table tbody tr {
+            transition: var(--transition);
+        }
+
+        .data-table tbody tr:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .data-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Status Badges */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.25rem 0.65rem;
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+        }
+
+        .badge-cotizada {
+            background: rgba(59, 130, 246, 0.15);
+            color: #60A5FA;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+        .badge-cotizada .badge-dot { background: #60A5FA; }
+
+        .badge-proceso {
+            background: rgba(245, 158, 11, 0.15);
+            color: #FBBF24;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+        .badge-proceso .badge-dot { background: #FBBF24; }
+
+        .badge-finalizada {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34D399;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        .badge-finalizada .badge-dot { background: #34D399; }
+
+        /* Progress Bar */
+        .progress-bar-container {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.08);
+            height: 8px;
+            border-radius: var(--radius-full);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-emerald));
+            border-radius: var(--radius-full);
+            transition: width 0.4s ease;
+        }
+
+        /* Dashboard Action Grid */
+        .action-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .action-card {
+            background: linear-gradient(145deg, var(--bg-card), rgba(20, 28, 45, 0.5));
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-card:hover {
+            border-color: var(--accent-blue);
+            box-shadow: var(--shadow-glow);
+            transform: translateY(-3px);
+        }
+
+        .action-card-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .action-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-md);
+            background: rgba(59, 130, 246, 0.15);
+            color: var(--accent-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+        }
+
+        .action-card.green .action-icon {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--accent-emerald);
+        }
+
+        .action-card h3 {
+            font-size: 1.15rem;
+            font-weight: 700;
+        }
+
+        .action-card p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.25rem;
+        }
+
+        /* Filter Controls */
+        .filter-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            position: relative;
+            flex: 1;
+            min-width: 260px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding-left: 2.5rem;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 0.9rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        /* Modals */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-container {
+            background: var(--bg-modal);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            max-width: 650px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            transform: scale(0.95);
+            transition: var(--transition);
+        }
+
+        .modal-overlay.active .modal-container {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-header h3 {
+            font-size: 1.15rem;
+            font-weight: 700;
+        }
+
+        .close-btn {
+            background: transparent;
+            color: var(--text-muted);
+            font-size: 1.25rem;
+            padding: 0.25rem;
+        }
+
+        .close-btn:hover {
+            color: var(--text-primary);
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 0.75rem;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        /* Login Screen Specific */
+        .login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: radial-gradient(circle at top right, #1E293B, #0B0F17 70%);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+
+        .login-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 440px;
+            padding: 2.5rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            text-align: center;
+        }
+
+        .login-brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .login-brand .logo-icon {
+            width: 48px;
+            height: 48px;
+            font-size: 1.5rem;
+        }
+
+        .login-brand h2 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            text-align: left;
+        }
+
+        .login-brand span {
+            color: var(--accent-cyan);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: block;
+        }
+
+        .login-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1.75rem;
+        }
+
+        /* Print Document Styling */
+        @media print {
+            body {
+                background: white !important;
+                color: black !important;
+            }
+            .app-header, .metrics-banner, .main-nav, .btn, .no-print {
+                display: none !important;
+            }
+            .app-main {
+                padding: 0 !important;
+                max-width: 100% !important;
+            }
+            .printable-document {
+                display: block !important;
+                background: white !important;
+                color: black !important;
+                padding: 20px !important;
+            }
+            .printable-document * {
+                color: black !important;
+                border-color: #ddd !important;
+            }
+        }
+
+        .printable-document {
+            display: none;
+            background: white;
+            color: #1e293b;
+            padding: 2rem;
+            border-radius: var(--radius-md);
+        }
+
+        .print-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 2px solid #3b82f6;
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .print-title {
+            color: #1e293b;
+            font-weight: 800;
+            font-size: 1.5rem;
+        }
+
+        .print-meta {
+            text-align: right;
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+
+        .print-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .print-box {
+            background: #f8fafc;
+            padding: 1rem;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .print-box h4 {
+            color: #0f172a;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .print-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1.5rem;
+            font-size: 0.85rem;
+        }
+
+        .print-table th, .print-table td {
+            border: 1px solid #e2e8f0;
+            padding: 8px 12px;
+            text-align: left;
+        }
+
+        .print-table th {
+            background: #f1f5f9;
+            color: #334155;
+        }
+
+        /* Utilities */
+        .text-right { text-align: right; }
+        .text-center { text-align: center; }
+        .font-mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+        .mt-4 { margin-top: 1rem; }
+        .mb-4 { margin-bottom: 1rem; }
+        .flex-between { display: flex; align-items: center; justify-content: space-between; }
+        .gap-2 { gap: 0.5rem; }
+
+        @media (max-width: 900px) {
+            .header-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .main-nav {
+                overflow-x: auto;
+                justify-content: flex-start;
+            }
+            .app-main {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==========================================================================
+         LOGIN OVERLAY (PANTALLA DE INICIO DE SESIÓN DEL EJECUTIVO)
+         ========================================================================== -->
+    <div id="login-overlay" class="login-overlay">
+        <div class="login-card">
+            <div class="login-brand">
+                <div class="logo-icon">N</div>
+                <div>
+                    <h2>NOVCOM</h2>
+                    <span>Salesforce Assistant</span>
+                </div>
+            </div>
+            <p>Plataforma de Cotizaciones y Gestión Comercial para Ejecutivos de Ventas</p>
+            <form id="form-login" onsubmit="handleLogin(event)">
+                <div class="form-group mb-4" style="text-align: left;">
+                    <label for="executive-name">Nombre del Ejecutivo Comercial</label>
+                    <input type="text" id="executive-name" placeholder="Ej: Carlos Mendoza" required autocomplete="off">
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    Iniciar Sesión de Trabajo &rarr;
+                </button>
+            </form>
+            <div style="margin-top: 1.5rem; font-size: 0.75rem; color: var(--text-muted);">
+                Novcom Enterprise Solutions &copy; 2026
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================================================
+         ENCABEZADO / NAVBAR PRINCIPAL
+         ========================================================================== -->
+    <header class="app-header">
+        <div class="header-container">
+            <a href="#" class="brand-logo" onclick="switchView('dashboard')">
+                <div class="logo-icon">N</div>
+                <div class="brand-text">
+                    <h1>NOVCOM</h1>
+                    <span>Salesforce</span>
+                </div>
+            </a>
+
+            <nav class="main-nav">
+                <button class="nav-btn active" id="nav-dashboard" onclick="switchView('dashboard')">
+                    📊 Dashboard
+                </button>
+                <button class="nav-btn" id="nav-quote" onclick="switchView('quote-builder')">
+                    📝 Generar Cotización
+                </button>
+                <button class="nav-btn" id="nav-sales" onclick="switchView('sales')">
+                    💰 Ventas & Pagos
+                </button>
+                <button class="nav-btn" id="nav-history" onclick="switchView('history')">
+                    📋 Historial
+                </button>
+            </nav>
+
+            <div class="user-profile">
+                <div class="avatar" id="user-avatar">CM</div>
+                <div class="user-info">
+                    <span class="user-name" id="user-display-name">Carlos Mendoza</span>
+                    <span class="user-role">Ejecutivo Comercial</span>
+                </div>
+                <button class="logout-btn" onclick="handleLogout()" title="Cerrar sesión">
+                    ✕
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ==========================================================================
+         CONTENIDO PRINCIPAL Y METRICAS
+         ========================================================================== -->
+    <main class="app-main">
+
+        <!-- Métricas Rápidas en la Parte Superior -->
+        <div class="metrics-banner">
+            <div class="metric-card">
+                <div class="metric-data">
+                    <span>Total Cotizado</span>
+                    <h3 id="metric-total-quoted">$0.00</h3>
+                </div>
+                <div class="metric-icon">📄</div>
+            </div>
+            <div class="metric-card emerald">
+                <div class="metric-data">
+                    <span>Total Vendido</span>
+                    <h3 id="metric-total-sold">$0.00</h3>
+                </div>
+                <div class="metric-icon">📈</div>
+            </div>
+            <div class="metric-card cyan">
+                <div class="metric-data">
+                    <span>Recaudado Total</span>
+                    <h3 id="metric-total-collected">$0.00</h3>
+                </div>
+                <div class="metric-icon">💵</div>
+            </div>
+            <div class="metric-card amber">
+                <div class="metric-data">
+                    <span>Saldo Pendiente</span>
+                    <h3 id="metric-total-pending">$0.00</h3>
+                </div>
+                <div class="metric-icon">⏳</div>
+            </div>
+        </div>
+
+        <!-- ==========================================================================
+             SECCIÓN 1: DASHBOARD GENERAL Y SELECCIÓN DE ACCIÓN
+             ========================================================================== -->
+        <section id="view-dashboard" class="view-section active">
+            <div class="section-header">
+                <div class="section-title">
+                    <h2>Bienvenido, <span id="welcome-executive-name">Ejecutivo</span></h2>
+                    <p>Selecciona una acción comercial para comenzar o revisa el estado global de tu cartera.</p>
+                </div>
+            </div>
+
+            <!-- Accesos Rápidos Principales -->
+            <div class="action-cards-grid">
+                <div class="action-card" onclick="switchView('quote-builder')">
+                    <div>
+                        <div class="action-card-header">
+                            <div class="action-icon">📝</div>
+                            <div>
+                                <h3>Generar Cotización</h3>
+                                <span style="font-size:0.75rem; color:var(--accent-cyan); font-weight:600;">NUEVA OFERTA</span>
+                            </div>
+                        </div>
+                        <p>Crea propuestas comerciales personalizadas con cálculo de márgenes y financiamiento en cuotas.</p>
+                    </div>
+                    <button class="btn btn-primary btn-sm" style="width: fit-content;">Iniciar Cotización &rarr;</button>
+                </div>
+
+                <div class="action-card green" onclick="switchView('sales')">
+                    <div>
+                        <div class="action-card-header">
+                            <div class="action-icon">💰</div>
+                            <div>
+                                <h3>Ver / Registrar Venta</h3>
+                                <span style="font-size:0.75rem; color:var(--accent-emerald); font-weight:600;">GESTIÓN DE COBROS</span>
+                            </div>
+                        </div>
+                        <p>Convierte cotizaciones aceptadas en ventas vivas y registra abonos de clientes hasta saldar.</p>
+                    </div>
+                    <button class="btn btn-success btn-sm" style="width: fit-content;">Ir a Registro de Ventas &rarr;</button>
+                </div>
+            </div>
+
+            <!-- Resumen de Cotizaciones Recientes -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>📑 Últimas Actividades y Cotizaciones</h3>
+                    <button class="btn btn-secondary btn-sm" onclick="switchView('history')">Ver Historial Completo</button>
+                </div>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Cliente / Empresa</th>
+                                <th>Producto / Servicio</th>
+                                <th>Monto Total</th>
+                                <th>Financiamiento</th>
+                                <th>Estado</th>
+                                <th class="text-right">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-recent-activity">
+                            <!-- Inyectado dinámicamente -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================================================
+             SECCIÓN 2: GENERADOR DE COTIZACIONES
+             ========================================================================== -->
+        <section id="view-quote-builder" class="view-section">
+            <div class="section-header">
+                <div class="section-title">
+                    <h2>Generador de Cotización Comercial</h2>
+                    <p>Ingresa los parámetros del cliente y del producto para emitir la propuesta financiera.</p>
+                </div>
+            </div>
+
+            <form id="form-quote" onsubmit="handleSaveQuote(event)">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem;">
+                    
+                    <!-- Datos del Cliente -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>👤 Información del Cliente</h3>
+                        </div>
+                        <div class="form-grid">
+                            <div class="form-group full-width">
+                                <label for="client-name">Nombre del Cliente *</label>
+                                <input type="text" id="client-name" required placeholder="Ej: Roberto Gómez">
+                            </div>
+                            <div class="form-group">
+                                <label for="client-company">Empresa / Razón Social</label>
+                                <input type="text" id="client-company" placeholder="Ej: Innova Tech S.A.C.">
+                            </div>
+                            <div class="form-group">
+                                <label for="client-id">RUC / DNI</label>
+                                <input type="text" id="client-id" placeholder="Ej: 20601234567">
+                            </div>
+                            <div class="form-group">
+                                <label for="client-email">Correo Electrónico</label>
+                                <input type="email" id="client-email" placeholder="cliente@empresa.com">
+                            </div>
+                            <div class="form-group">
+                                <label for="client-phone">Teléfono de Contacto</label>
+                                <input type="tel" id="client-phone" placeholder="+51 987 654 321">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Datos del Producto y Margen -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>📦 Datos del Producto y Financiamiento</h3>
+                        </div>
+                        <div class="form-grid">
+                            <div class="form-group full-width">
+                                <label for="product-name">Nombre del Ítem / Servicio *</label>
+                                <input type="text" id="product-name" required placeholder="Ej: Licencia ERP Novcom Enterprise (Anual)">
+                            </div>
+                            <div class="form-group">
+                                <label for="product-cost">Costo del Producto *</label>
+                                <div class="input-group">
+                                    <span class="input-prefix">$</span>
+                                    <input type="number" id="product-cost" step="0.01" min="0" required class="has-prefix" placeholder="0.00" oninput="calculateFinancials()">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="margin-percent">Margen Aplicado (%) *</label>
+                                <div class="input-group">
+                                    <input type="number" id="margin-percent" step="0.1" min="0" value="35" required class="has-suffix" placeholder="35" oninput="calculateFinancials()">
+                                    <span class="input-suffix">%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Opción de Financiamiento -->
+                        <div style="margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--border-color);">
+                            <label class="toggle-container" style="margin-bottom: 1rem;">
+                                <input type="checkbox" id="financing-toggle" hidden onchange="toggleFinancingOptions()">
+                                <div class="toggle-switch"></div>
+                                <div>
+                                    <span style="font-weight: 600; font-size: 0.9rem;">¿Venta Financiada en Cuotas?</span>
+                                    <div style="font-size: 0.75rem; color: var(--text-muted);">Genera un cronograma de amortización de pagos</div>
+                                </div>
+                            </label>
+
+                            <div id="financing-fields" class="form-grid" style="display: none;">
+                                <div class="form-group">
+                                    <label for="installments-count">Número de Cuotas</label>
+                                    <select id="installments-count" onchange="calculateFinancials()">
+                                        <option value="2">2 Cuotas</option>
+                                        <option value="3">3 Cuotas</option>
+                                        <option value="6" selected>6 Cuotas</option>
+                                        <option value="12">12 Cuotas</option>
+                                        <option value="18">18 Cuotas</option>
+                                        <option value="24">24 Cuotas</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="interest-rate">Tasa de Interés por Cuota (%)</label>
+                                    <div class="input-group">
+                                        <input type="number" id="interest-rate" step="0.01" min="0" value="2.5" class="has-suffix" oninput="calculateFinancials()">
+                                        <span class="input-suffix">%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Resumen Financiero Calculado -->
+                <div class="financial-summary">
+                    <div class="summary-grid">
+                        <div class="summary-item">
+                            <label>Costo Base</label>
+                            <div class="value" id="calc-base-cost">$0.00</div>
+                        </div>
+                        <div class="summary-item">
+                            <label>Ganancia / Margen</label>
+                            <div class="value highlight-cyan" id="calc-margin-amount">$0.00</div>
+                        </div>
+                        <div class="summary-item">
+                            <label>Precio Venta Contado</label>
+                            <div class="value highlight-blue" id="calc-final-price">$0.00</div>
+                        </div>
+                        <div class="summary-item" id="summary-financed-box" style="display: none;">
+                            <label>Cuota Mensual Est.</label>
+                            <div class="value highlight-emerald" id="calc-monthly-installment">$0.00</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabla de Cronograma de Pagos -->
+                <div class="card mt-4" id="schedule-card" style="display: none;">
+                    <div class="card-header">
+                        <h3>📅 Cronograma de Pagos Estimado (Sistema Francés)</h3>
+                        <span style="font-size: 0.75rem; color: var(--text-muted);">Cuotas Fijas Mensuales</span>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>N° Cuota</th>
+                                    <th>Fecha Estimada</th>
+                                    <th>Capital Amortizado</th>
+                                    <th>Interés</th>
+                                    <th>Cuota Total</th>
+                                    <th>Saldo Restante</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-schedule-preview">
+                                <!-- Filas de cuotas -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Botones de Acción -->
+                <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1.5rem; flex-wrap: wrap;">
+                    <button type="button" class="btn btn-secondary" onclick="resetQuoteForm()">Limpiar Formulario</button>
+                    <button type="submit" class="btn btn-primary">💾 Guardar Cotización</button>
+                </div>
+            </form>
+        </section>
+
+        <!-- ==========================================================================
+             SECCIÓN 3: REGISTRO DE VENTAS Y SEGUIMIENTO DE PAGOS
+             ========================================================================== -->
+        <section id="view-sales" class="view-section">
+            <div class="section-header">
+                <div class="section-title">
+                    <h2>Gestión de Ventas y Registro de Pagos</h2>
+                    <p>Supervisa los contratos en proceso de pago y registra los abonos realizados por los clientes.</p>
+                </div>
+            </div>
+
+            <div class="filter-bar">
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="sales-search" placeholder="Buscar por cliente, empresa o código de venta..." oninput="renderSalesList()">
+                </div>
+                <div style="display: flex; gap: 0.5rem;">
+                    <select id="sales-status-filter" onchange="renderSalesList()">
+                        <option value="ALL">Todos los Estados</option>
+                        <option value="EN_PROCESO" selected>En Proceso de Pago</option>
+                        <option value="FINALIZADA">Finalizadas / Pagadas</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="sales-list-container">
+                <!-- Tarjetas de ventas interactivas inyectadas aquí -->
+            </div>
+        </section>
+
+        <!-- ==========================================================================
+             SECCIÓN 4: HISTORIAL GENERAL Y REPORTES
+             ========================================================================== -->
+        <section id="view-history" class="view-section">
+            <div class="section-header">
+                <div class="section-title">
+                    <h2>Historial Integrado de Operaciones</h2>
+                    <p>Registro completo de cotizaciones emitidas y ventas registradas por el ejecutivo.</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="filter-bar">
+                    <div class="search-box">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" id="history-search" placeholder="Buscar en historial..." oninput="renderHistoryTable()">
+                    </div>
+                    <select id="history-type-filter" onchange="renderHistoryTable()">
+                        <option value="ALL">Todos los Registros</option>
+                        <option value="COTIZADA">Solo Cotizadas</option>
+                        <option value="EN_PROCESO">Ventas en Proceso</option>
+                        <option value="FINALIZADA">Ventas Finalizadas</option>
+                    </select>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Código</th>
+                                <th>Cliente</th>
+                                <th>Producto / Servicio</th>
+                                <th>Precio Venta</th>
+                                <th>Modalidad</th>
+                                <th>Estado</th>
+                                <th class="text-right">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-history-body">
+                            <!-- Filas del historial -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ==========================================================================
+         MODALES Y VENTANAS EMERGENTES
+         ========================================================================== -->
+    
+    <!-- Modal 1: Registrar Pago de Cuota -->
+    <div id="modal-payment" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3>💳 Registrar Nuevo Pago / Abono</h3>
+                <button class="close-btn" onclick="closeModal('modal-payment')">✕</button>
+            </div>
+            <form id="form-record-payment" onsubmit="handleSavePayment(event)">
+                <div class="modal-body">
+                    <input type="hidden" id="pay-sale-id">
+                    
+                    <div style="background: rgba(255, 255, 255, 0.03); padding: 1rem; border-radius: var(--radius-md); margin-bottom: 1.25rem; border: 1px solid var(--border-color);">
+                        <div class="flex-between">
+                            <span style="color: var(--text-secondary); font-size: 0.85rem;">Cliente:</span>
+                            <span style="font-weight: 700;" id="pay-modal-client">---</span>
+                        </div>
+                        <div class="flex-between mt-4">
+                            <span style="color: var(--text-secondary); font-size: 0.85rem;">Saldo Deudor Restante:</span>
+                            <span style="font-weight: 800; color: var(--accent-amber);" id="pay-modal-balance">$0.00</span>
+                        </div>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="pay-date">Fecha del Pago *</label>
+                            <input type="date" id="pay-date" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="pay-amount">Monto Pagado ($) *</label>
+                            <input type="number" id="pay-amount" step="0.01" min="0.01" required placeholder="0.00">
+                        </div>
+                        <div class="form-group">
+                            <label for="pay-method">Medio de Pago *</label>
+                            <select id="pay-method" required>
+                                <option value="Transferencia Bancaria">Transferencia Bancaria</option>
+                                <option value="Efectivo">Efectivo</option>
+                                <option value="Tarjeta de Crédito/Débito">Tarjeta de Crédito/Débito</option>
+                                <option value="Cheque Comercial">Cheque Comercial</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="pay-reference">N° Operación / Referencia</label>
+                            <input type="text" id="pay-reference" placeholder="Ej: OP-984123">
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="pay-notes">Notas / Observaciones</label>
+                            <textarea id="pay-notes" rows="2" placeholder="Detalles opcionales del recibo o depósito..."></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('modal-payment')">Cancelar</button>
+                    <button type="submit" class="btn btn-success">Guardar Abono</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal 2: Vista Previa de Documento Cotización (Para Impresión/PDF) -->
+    <div id="modal-print-view" class="modal-overlay">
+        <div class="modal-container" style="max-width: 800px;">
+            <div class="modal-header">
+                <h3>📄 Vista de Documento de Cotización</h3>
+                <div style="display: flex; gap: 0.5rem;">
+                    <button class="btn btn-primary btn-sm" onclick="window.print()">🖨️ Imprimir / Exportar PDF</button>
+                    <button class="close-btn" onclick="closeModal('modal-print-view')">✕</button>
+                </div>
+            </div>
+            <div class="modal-body" style="background: white; color: #0F172A; padding: 2.5rem;" id="print-document-content">
+                <!-- Se rellena dinámicamente con plantilla HTML para imprimir -->
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ==========================================================================
+         JAVASCRIPT DE LA APLICACIÓN (LÓGICA, CÁLCULOS Y ESTADO)
+         ========================================================================== -->
+    <script>
+        /* ==========================================================================
+           1. ESTADO GLOBAL Y CONFIGURACIÓN PERSISTENTE
+           ========================================================================== */
+        const STORAGE_KEY_SESSION = 'novcom_session_v1';
+        const STORAGE_KEY_DATA = 'novcom_salesforce_data_v1';
+
+        let appState = {
+            currentExecutive: '',
+            quotes: [],
+            sales: []
+        };
+
+        // Semilla de Datos de Ejemplo Iniciales si está vacío
+        const initialSeedData = {
+            quotes: [
+                {
+                    id: 'COT-2026-101',
+                    executive: 'Carlos Mendoza',
+                    createdAt: '2026-07-15T10:30:00Z',
+                    client: {
+                        name: 'Ana María Torres',
+                        company: 'Corporación Logística del Norte',
+                        idNumber: '20554896321',
+                        email: 'atorres@logisticanorte.com',
+                        phone: '+51 984 123 789'
+                    },
+                    product: {
+                        name: 'Servidor Novcom HighPerformance X5',
+                        cost: 4500.00,
+                        marginPercent: 40,
+                        sellingPrice: 6300.00
+                    },
+                    financing: {
+                        isFinanced: true,
+                        installments: 6,
+                        interestRatePerPeriod: 2.0,
+                        schedule: [
+                            { period: 1, dueDate: '2026-08-15', amortizedCapital: 1000.82, interest: 126.00, installmentTotal: 1126.82, remainingBalance: 5299.18 },
+                            { period: 2, dueDate: '2026-09-15', amortizedCapital: 1020.84, interest: 105.98, installmentTotal: 1126.82, remainingBalance: 4278.34 },
+                            { period: 3, dueDate: '2026-10-15', amortizedCapital: 1041.25, interest: 85.57, installmentTotal: 1126.82, remainingBalance: 3237.09 },
+                            { period: 4, dueDate: '2026-11-15', amortizedCapital: 1062.08, interest: 64.74, installmentTotal: 1126.82, remainingBalance: 2175.01 },
+                            { period: 5, dueDate: '2026-12-15', amortizedCapital: 1083.32, interest: 43.50, installmentTotal: 1126.82, remainingBalance: 1091.69 },
+                            { period: 6, dueDate: '2027-01-15', amortizedCapital: 1091.69, interest: 21.83, installmentTotal: 1113.52, remainingBalance: 0.00 }
+                        ]
+                    },
+                    status: 'COTIZADA'
+                }
+            ],
+            sales: [
+                {
+                    id: 'VEN-2026-001',
+                    quoteId: 'COT-2026-099',
+                    executive: 'Carlos Mendoza',
+                    saleDate: '2026-07-01T14:00:00Z',
+                    client: {
+                        name: 'Gabriel Morales',
+                        company: 'Sistemas Médicos Especializados',
+                        idNumber: '20498765432',
+                        email: 'gmorales@sismed.pe',
+                        phone: '+51 971 555 444'
+                    },
+                    product: {
+                        name: 'Implementación Cloud & Ciberseguridad Enterprise',
+                        cost: 8000.00,
+                        marginPercent: 30,
+                        sellingPrice: 10400.00
+                    },
+                    financing: {
+                        isFinanced: true,
+                        installments: 4,
+                        interestRatePerPeriod: 1.5,
+                        schedule: [
+                            { period: 1, dueDate: '2026-07-15', amortizedCapital: 2541.90, interest: 156.00, installmentTotal: 2697.90, remainingBalance: 7858.10 },
+                            { period: 2, dueDate: '2026-08-15', amortizedCapital: 2580.03, interest: 117.87, installmentTotal: 2697.90, remainingBalance: 5278.07 },
+                            { period: 3, dueDate: '2026-09-15', amortizedCapital: 2618.73, interest: 79.17, installmentTotal: 2697.90, remainingBalance: 2659.34 },
+                            { period: 4, dueDate: '2026-10-15', amortizedCapital: 2659.34, interest: 39.89, installmentTotal: 2699.23, remainingBalance: 0.00 }
+                        ]
+                    },
+                    payments: [
+                        { id: 'PAY-1001', date: '2026-07-14', amount: 2697.90, paymentMethod: 'Transferencia Bancaria', reference: 'TR-88412', notes: 'Pago Cuota 1 en fecha' }
+                    ],
+                    totalPaid: 2697.90,
+                    remainingBalance: 7702.10,
+                    status: 'EN_PROCESO'
+                }
+            ]
+        };
+
+        /* ==========================================================================
+           2. INICIALIZACIÓN Y CICLO DE VIDA
+           ========================================================================== */
+        document.addEventListener('DOMContentLoaded', () => {
+            loadStorageData();
+            checkUserSession();
+            // Set default date in payment modal to today
+            document.getElementById('pay-date').value = new Date().toISOString().split('T')[0];
+        });
+
+        function loadStorageData() {
+            const storedData = localStorage.getItem(STORAGE_KEY_DATA);
+            if (storedData) {
+                try {
+                    const parsed = JSON.parse(storedData);
+                    appState.quotes = parsed.quotes || [];
+                    appState.sales = parsed.sales || [];
+                } catch(e) {
+                    console.error("Error parseando localStorage:", e);
+                    appState.quotes = initialSeedData.quotes;
+                    appState.sales = initialSeedData.sales;
+                }
+            } else {
+                appState.quotes = initialSeedData.quotes;
+                appState.sales = initialSeedData.sales;
+                saveStorageData();
+            }
+        }
+
+        function saveStorageData() {
+            localStorage.setItem(STORAGE_KEY_DATA, JSON.stringify({
+                quotes: appState.quotes,
+                sales: appState.sales
+            }));
+            updateMetricsBanner();
+        }
+
+        function checkUserSession() {
+            const savedExecutive = localStorage.getItem(STORAGE_KEY_SESSION);
+            if (savedExecutive) {
+                appState.currentExecutive = savedExecutive;
+                document.getElementById('login-overlay').style.display = 'none';
+                updateExecutiveUI();
+                renderAllViews();
+            } else {
+                document.getElementById('login-overlay').style.display = 'flex';
+            }
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const nameInput = document.getElementById('executive-name').value.trim();
+            if (nameInput) {
+                appState.currentExecutive = nameInput;
+                localStorage.setItem(STORAGE_KEY_SESSION, nameInput);
+                document.getElementById('login-overlay').style.display = 'none';
+                updateExecutiveUI();
+                renderAllViews();
+            }
+        }
+
+        function handleLogout() {
+            if (confirm("¿Deseas cerrar la sesión del ejecutivo actual?")) {
+                localStorage.removeItem(STORAGE_KEY_SESSION);
+                appState.currentExecutive = '';
+                document.getElementById('login-overlay').style.display = 'flex';
+            }
+        }
+
+        function updateExecutiveUI() {
+            const execName = appState.currentExecutive || 'Ejecutivo';
+            document.getElementById('user-display-name').textContent = execName;
+            document.getElementById('welcome-executive-name').textContent = execName;
+            
+            // Generar iniciales para avatar
+            const parts = execName.split(' ');
+            const initials = parts.length > 1 ? (parts[0][0] + parts[1][0]).toUpperCase() : parts[0].substring(0, 2).toUpperCase();
+            document.getElementById('user-avatar').textContent = initials;
+        }
+
+        /* ==========================================================================
+           3. NAVEGACIÓN Y CAMBIO DE VISTAS (SPA)
+           ========================================================================== */
+        function switchView(viewName) {
+            // Actualizar botones del nav
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            const activeNavBtn = document.getElementById(`nav-${viewName === 'quote-builder' ? 'quote' : viewName}`);
+            if (activeNavBtn) activeNavBtn.classList.add('active');
+
+            // Actualizar vistas
+            document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
+            const targetSection = document.getElementById(`view-${viewName}`);
+            if (targetSection) targetSection.classList.add('active');
+
+            // Recargar datos específicos según la vista
+            if (viewName === 'dashboard') renderDashboard();
+            if (viewName === 'sales') renderSalesList();
+            if (viewName === 'history') renderHistoryTable();
+            if (viewName === 'quote-builder') calculateFinancials();
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function renderAllViews() {
+            updateMetricsBanner();
+            renderDashboard();
+            renderSalesList();
+            renderHistoryTable();
+        }
+
+        /* ==========================================================================
+           4. MOTOR FINANCIERO Y CÁLCULO DE COTIZACIÓN (AMORTIZACIÓN FRANCESA)
+           ========================================================================== */
+        function toggleFinancingOptions() {
+            const isChecked = document.getElementById('financing-toggle').checked;
+            document.getElementById('financing-fields').style.display = isChecked ? 'grid' : 'none';
+            document.getElementById('summary-financed-box').style.display = isChecked ? 'block' : 'none';
+            document.getElementById('schedule-card').style.display = isChecked ? 'block' : 'none';
+            calculateFinancials();
+        }
+
+        function calculateFinancials() {
+            const cost = parseFloat(document.getElementById('product-cost').value) || 0;
+            const marginPercent = parseFloat(document.getElementById('margin-percent').value) || 0;
+
+            // Fórmula: Precio Venta = Costo * (1 + Margen%)
+            const marginAmount = cost * (marginPercent / 100);
+            const sellingPrice = cost + marginAmount;
+
+            // Actualizar elementos de resumen
+            document.getElementById('calc-base-cost').textContent = formatCurrency(cost);
+            document.getElementById('calc-margin-amount').textContent = formatCurrency(marginAmount);
+            document.getElementById('calc-final-price').textContent = formatCurrency(sellingPrice);
+
+            const isFinanced = document.getElementById('financing-toggle').checked;
+            
+            if (isFinanced && sellingPrice > 0) {
+                const n = parseInt(document.getElementById('installments-count').value) || 1;
+                const rPercent = parseFloat(document.getElementById('interest-rate').value) || 0;
+                const r = rPercent / 100; // Tasa por período
+
+                const schedule = generateFrenchSchedule(sellingPrice, n, r);
+                
+                if (schedule.length > 0) {
+                    const cuotaMensualEst = schedule[0].installmentTotal;
+                    document.getElementById('calc-monthly-installment').textContent = formatCurrency(cuotaMensualEst);
+                    renderScheduleTable(schedule);
+                }
+            }
+        }
+
+        /**
+         * Genera un cronograma de amortización usando el Sistema Francés (Cuota Fija)
+         */
+        function generateFrenchSchedule(P, n, r) {
+            let cuota = 0;
+            if (r > 0) {
+                cuota = P * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+            } else {
+                cuota = P / n;
+            }
+
+            let balance = P;
+            const schedule = [];
+            const today = new Date();
+
+            for (let i = 1; i <= n; i++) {
+                const interest = balance * r;
+                let capital = cuota - interest;
+
+                // Ajuste de redondeo final en la última cuota
+                if (i === n) {
+                    capital = balance;
+                    cuota = capital + interest;
+                    balance = 0;
+                } else {
+                    balance -= capital;
+                }
+
+                // Fecha estimada vencimiento (+30 días por cuota)
+                const dueDate = new Date(today);
+                dueDate.setDate(dueDate.getDate() + (i * 30));
+
+                schedule.push({
+                    period: i,
+                    dueDate: dueDate.toISOString().split('T')[0],
+                    amortizedCapital: capital,
+                    interest: interest,
+                    installmentTotal: cuota,
+                    remainingBalance: balance
+                });
+            }
+
+            return schedule;
+        }
+
+        function renderScheduleTable(schedule) {
+            const tbody = document.getElementById('table-schedule-preview');
+            tbody.innerHTML = '';
+
+            schedule.forEach(item => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>Cuota ${item.period}</strong></td>
+                    <td>${formatDate(item.dueDate)}</td>
+                    <td>${formatCurrency(item.amortizedCapital)}</td>
+                    <td style="color: var(--accent-amber);">${formatCurrency(item.interest)}</td>
+                    <td style="font-weight: 700; color: var(--accent-emerald);">${formatCurrency(item.installmentTotal)}</td>
+                    <td class="font-mono">${formatCurrency(item.remainingBalance)}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        /* ==========================================================================
+           5. GUARDAR Y CONVERTIR COTIZACIONES
+           ========================================================================== */
+        function handleSaveQuote(e) {
+            e.preventDefault();
+
+            const clientName = document.getElementById('client-name').value.trim();
+            const productName = document.getElementById('product-name').value.trim();
+            const cost = parseFloat(document.getElementById('product-cost').value) || 0;
+            const marginPercent = parseFloat(document.getElementById('margin-percent').value) || 0;
+            const isFinanced = document.getElementById('financing-toggle').checked;
+
+            if (cost <= 0) {
+                alert("Por favor ingresa un costo válido para el producto.");
+                return;
+            }
+
+            const marginAmount = cost * (marginPercent / 100);
+            const sellingPrice = cost + marginAmount;
+
+            let financingData = {
+                isFinanced: false,
+                installments: 1,
+                interestRatePerPeriod: 0,
+                schedule: []
+            };
+
+            if (isFinanced) {
+                const n = parseInt(document.getElementById('installments-count').value) || 1;
+                const rPercent = parseFloat(document.getElementById('interest-rate').value) || 0;
+                financingData = {
+                    isFinanced: true,
+                    installments: n,
+                    interestRatePerPeriod: rPercent,
+                    schedule: generateFrenchSchedule(sellingPrice, n, rPercent / 100)
+                };
+            }
+
+            const newQuote = {
+                id: `COT-${new Date().getFullYear()}-${Math.floor(100 + Math.random() * 900)}`,
+                executive: appState.currentExecutive,
+                createdAt: new Date().toISOString(),
+                client: {
+                    name: clientName,
+                    company: document.getElementById('client-company').value.trim() || 'N/A',
+                    idNumber: document.getElementById('client-id').value.trim() || 'N/A',
+                    email: document.getElementById('client-email').value.trim() || 'N/A',
+                    phone: document.getElementById('client-phone').value.trim() || 'N/A'
+                },
+                product: {
+                    name: productName,
+                    cost: cost,
+                    marginPercent: marginPercent,
+                    sellingPrice: sellingPrice
+                },
+                financing: financingData,
+                status: 'COTIZADA'
+            };
+
+            appState.quotes.unshift(newQuote);
+            saveStorageData();
+
+            alert(`✅ Cotización ${newQuote.id} guardada exitosamente.`);
+            resetQuoteForm();
+            switchView('history');
+        }
+
+        function resetQuoteForm() {
+            document.getElementById('form-quote').reset();
+            document.getElementById('financing-toggle').checked = false;
+            toggleFinancingOptions();
+            calculateFinancials();
+        }
+
+        function convertQuoteToSale(quoteId) {
+            const quote = appState.quotes.find(q => q.id === quoteId);
+            if (!quote) return;
+
+            if (quote.status === 'ACEPTADA') {
+                alert("Esta cotización ya ha sido convertida en venta.");
+                return;
+            }
+
+            if (!confirm(`¿Confirmas la aceptación de la cotización ${quote.id} para convertirla en un REGISTRO DE VENTA activo?`)) {
+                return;
+            }
+
+            // Cambiar estado de la cotización
+            quote.status = 'ACEPTADA';
+
+            // Crear registro de venta
+            const newSale = {
+                id: `VEN-${new Date().getFullYear()}-${Math.floor(100 + Math.random() * 900)}`,
+                quoteId: quote.id,
+                executive: quote.executive,
+                saleDate: new Date().toISOString(),
+                client: { ...quote.client },
+                product: { ...quote.product },
+                financing: { ...quote.financing },
+                payments: [],
+                totalPaid: 0,
+                remainingBalance: quote.product.sellingPrice,
+                status: 'EN_PROCESO'
+            };
+
+            appState.sales.unshift(newSale);
+            saveStorageData();
+
+            alert(`🎉 ¡Excelente! Se ha creado el Registro de Venta ${newSale.id}. Redirigiendo a Gestión de Cobros...`);
+            switchView('sales');
+        }
+
+        /* ==========================================================================
+           6. GESTIÓN DE VENTAS, PAGOS Y AMORTIZACIÓN
+           ========================================================================== */
+        function renderSalesList() {
+            const container = document.getElementById('sales-list-container');
+            const search = document.getElementById('sales-search').value.toLowerCase();
+            const statusFilter = document.getElementById('sales-status-filter').value;
+
+            container.innerHTML = '';
+
+            const filteredSales = appState.sales.filter(sale => {
+                const matchesSearch = sale.client.name.toLowerCase().includes(search) ||
+                                      sale.client.company.toLowerCase().includes(search) ||
+                                      sale.id.toLowerCase().includes(search);
+                const matchesStatus = statusFilter === 'ALL' || sale.status === statusFilter;
+                return matchesSearch && matchesStatus;
+            });
+
+            if (filteredSales.length === 0) {
+                container.innerHTML = `
+                    <div class="card text-center" style="padding: 3rem;">
+                        <p style="color: var(--text-muted);">No se encontraron registros de venta activos.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            filteredSales.forEach(sale => {
+                const percentPaid = Math.min(100, Math.round((sale.totalPaid / sale.product.sellingPrice) * 100));
+                
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <div class="card-header">
+                        <div>
+                            <span class="badge ${sale.status === 'FINALIZADA' ? 'badge-finalizada' : 'badge-proceso'} mb-4">
+                                <span class="badge-dot"></span>
+                                ${sale.status === 'FINALIZADA' ? 'FINALIZADA / CANCELADA' : 'EN PROCESO DE PAGO'}
+                            </span>
+                            <h3 style="margin-top: 0.3rem;">${sale.id} &bull; ${escapeHtml(sale.client.name)}</h3>
+                            <span style="font-size: 0.85rem; color: var(--text-secondary);">${escapeHtml(sale.client.company)} | Tel: ${escapeHtml(sale.client.phone)}</span>
+                        </div>
+                        <div class="text-right">
+                            <span style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Precio Venta Total</span>
+                            <h3 style="color: var(--accent-cyan); font-size: 1.3rem;">${formatCurrency(sale.product.sellingPrice)}</h3>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 1.25rem;">
+                        <div class="flex-between mb-4" style="font-size: 0.85rem;">
+                            <span>Producto / Servicio: <strong>${escapeHtml(sale.product.name)}</strong></span>
+                            <span>Modalidad: <strong>${sale.financing.isFinanced ? `${sale.financing.installments} Cuotas` : 'Contado'}</strong></span>
+                        </div>
+
+                        <!-- Barra de Progreso de Amortización -->
+                        <div style="margin-top: 0.75rem;">
+                            <div class="flex-between mb-4" style="font-size: 0.8rem; font-weight: 600;">
+                                <span style="color: var(--accent-emerald);">Recaudado: ${formatCurrency(sale.totalPaid)} (${percentPaid}%)</span>
+                                <span style="color: var(--accent-amber);">Saldo Restante: ${formatCurrency(sale.remainingBalance)}</span>
+                            </div>
+                            <div class="progress-bar-container">
+                                <div class="progress-bar-fill" style="width: ${percentPaid}%;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Botones y Detalle de Pagos -->
+                    <div class="flex-between" style="flex-wrap: wrap; gap: 0.75rem; pt-4; border-top: 1px solid var(--border-color); padding-top: 1rem;">
+                        <button class="btn btn-secondary btn-sm" onclick="togglePaymentHistory('${sale.id}')">
+                            📑 Historial de Abonos (${sale.payments.length})
+                        </button>
+                        ${sale.status !== 'FINALIZADA' ? `
+                            <button class="btn btn-success btn-sm" onclick="openPaymentModal('${sale.id}')">
+                                💵 Registrar Nuevo Pago
+                            </button>
+                        ` : '<span style="color: var(--accent-emerald); font-weight: 600; font-size: 0.85rem;">✓ Deuda Totalmente Saldata</span>'}
+                    </div>
+
+                    <!-- Despliegue de Pagos Registrados -->
+                    <div id="payments-history-${sale.id}" style="display: none; margin-top: 1rem; background: var(--bg-input); padding: 1rem; border-radius: var(--radius-md);">
+                        <h4 style="font-size: 0.9rem; margin-bottom: 0.75rem;">Historial de Transacciones / Abonos:</h4>
+                        ${sale.payments.length === 0 ? '<p style="font-size:0.8rem; color:var(--text-muted);">No hay abonos registrados aún.</p>' : `
+                            <table class="data-table" style="font-size: 0.8rem;">
+                                <thead>
+                                    <tr>
+                                        <th>Fecha</th>
+                                        <th>Monto</th>
+                                        <th>Medio de Pago</th>
+                                        <th>Referencia</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${sale.payments.map(p => `
+                                        <tr>
+                                            <td>${formatDate(p.date)}</td>
+                                            <td style="font-weight: 700; color: var(--accent-emerald);">${formatCurrency(p.amount)}</td>
+                                            <td>${escapeHtml(p.paymentMethod)}</td>
+                                            <td>${escapeHtml(p.reference || 'N/A')}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        `}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function togglePaymentHistory(saleId) {
+            const el = document.getElementById(`payments-history-${saleId}`);
+            if (el) {
+                el.style.display = el.style.display === 'none' ? 'block' : 'none';
+            }
+        }
+
+        function openPaymentModal(saleId) {
+            const sale = appState.sales.find(s => s.id === saleId);
+            if (!sale) return;
+
+            document.getElementById('pay-sale-id').value = sale.id;
+            document.getElementById('pay-modal-client').textContent = `${sale.client.name} (${sale.client.company})`;
+            document.getElementById('pay-modal-balance').textContent = formatCurrency(sale.remainingBalance);
+            document.getElementById('pay-amount').max = sale.remainingBalance;
+            document.getElementById('pay-amount').value = '';
+            
+            openModal('modal-payment');
+        }
+
+        function handleSavePayment(e) {
+            e.preventDefault();
+
+            const saleId = document.getElementById('pay-sale-id').value;
+            const sale = appState.sales.find(s => s.id === saleId);
+            if (!sale) return;
+
+            const amount = parseFloat(document.getElementById('pay-amount').value) || 0;
+            const date = document.getElementById('pay-date').value;
+            const method = document.getElementById('pay-method').value;
+            const ref = document.getElementById('pay-reference').value.trim();
+            const notes = document.getElementById('pay-notes').value.trim();
+
+            if (amount <= 0 || amount > sale.remainingBalance + 0.01) {
+                alert("El monto ingresado excede el saldo pendiente o no es válido.");
+                return;
+            }
+
+            const newPayment = {
+                id: `PAY-${Math.floor(1000 + Math.random() * 9000)}`,
+                date: date,
+                amount: amount,
+                paymentMethod: method,
+                reference: ref,
+                notes: notes
+            };
+
+            sale.payments.push(newPayment);
+            sale.totalPaid += amount;
+            sale.remainingBalance -= amount;
+
+            if (sale.remainingBalance <= 0.01) {
+                sale.remainingBalance = 0;
+                sale.status = 'FINALIZADA';
+            }
+
+            saveStorageData();
+            closeModal('modal-payment');
+            renderSalesList();
+            alert(`✅ Pago de ${formatCurrency(amount)} registrado correctamente en la venta ${sale.id}.`);
+        }
+
+        /* ==========================================================================
+           7. DASHBOARD GENERAL Y VISTA DE HISTORIAL
+           ========================================================================== */
+        function renderDashboard() {
+            updateMetricsBanner();
+
+            const tbody = document.getElementById('table-recent-activity');
+            tbody.innerHTML = '';
+
+            const allItems = [...appState.quotes];
+            allItems.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+            const recentItems = allItems.slice(0, 5);
+
+            if (recentItems.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="text-center" style="color:var(--text-muted);">No hay cotizaciones registradas.</td></tr>`;
+                return;
+            }
+
+            recentItems.forEach(item => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="font-mono"><strong>${item.id}</strong></td>
+                    <td>${escapeHtml(item.client.name)}<br><span style="font-size:0.75rem; color:var(--text-muted);">${escapeHtml(item.client.company)}</span></td>
+                    <td>${escapeHtml(item.product.name)}</td>
+                    <td style="font-weight:700; color:var(--accent-cyan);">${formatCurrency(item.product.sellingPrice)}</td>
+                    <td>${item.financing.isFinanced ? `${item.financing.installments} Cuotas` : 'Contado'}</td>
+                    <td>
+                        <span class="badge ${item.status === 'ACEPTADA' ? 'badge-finalizada' : 'badge-cotizada'}">
+                            <span class="badge-dot"></span>
+                            ${item.status}
+                        </span>
+                    </td>
+                    <td class="text-right">
+                        <button class="btn btn-secondary btn-sm" onclick="printQuote('${item.id}')">🖨️ Imprimir</button>
+                        ${item.status === 'COTIZADA' ? `
+                            <button class="btn btn-success btn-sm" onclick="convertQuoteToSale('${item.id}')">✔ Convertir a Venta</button>
+                        ` : ''}
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function renderHistoryTable() {
+            const tbody = document.getElementById('table-history-body');
+            const search = document.getElementById('history-search').value.toLowerCase();
+            const filterType = document.getElementById('history-type-filter').value;
+
+            tbody.innerHTML = '';
+
+            // Combinar cotizaciones y ventas para historial único
+            let historyList = appState.quotes.map(q => ({
+                type: 'QUOTE',
+                id: q.id,
+                date: q.createdAt,
+                client: q.client,
+                product: q.product,
+                financing: q.financing,
+                status: q.status,
+                originalObj: q
+            }));
+
+            if (filterType !== 'ALL') {
+                historyList = historyList.filter(h => h.status === filterType);
+            }
+
+            historyList = historyList.filter(h => 
+                h.client.name.toLowerCase().includes(search) ||
+                h.client.company.toLowerCase().includes(search) ||
+                h.id.toLowerCase().includes(search) ||
+                h.product.name.toLowerCase().includes(search)
+            );
+
+            if (historyList.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="text-center" style="color:var(--text-muted);">No se encontraron registros en el historial.</td></tr>`;
+                return;
+            }
+
+            historyList.forEach(item => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${formatDate(item.date)}</td>
+                    <td class="font-mono"><strong>${item.id}</strong></td>
+                    <td>${escapeHtml(item.client.name)}<br><span style="font-size:0.75rem; color:var(--text-muted);">${escapeHtml(item.client.company)}</span></td>
+                    <td>${escapeHtml(item.product.name)}</td>
+                    <td style="font-weight:700;">${formatCurrency(item.product.sellingPrice)}</td>
+                    <td>${item.financing.isFinanced ? `${item.financing.installments} Cuotas` : 'Contado'}</td>
+                    <td>
+                        <span class="badge ${item.status === 'ACEPTADA' || item.status === 'FINALIZADA' ? 'badge-finalizada' : item.status === 'EN_PROCESO' ? 'badge-proceso' : 'badge-cotizada'}">
+                            <span class="badge-dot"></span>
+                            ${item.status}
+                        </span>
+                    </td>
+                    <td class="text-right">
+                        <button class="btn btn-secondary btn-sm" onclick="printQuote('${item.id}')">📄 Documento</button>
+                        ${item.status === 'COTIZADA' ? `
+                            <button class="btn btn-success btn-sm" onclick="convertQuoteToSale('${item.id}')">✔ Convertir a Venta</button>
+                        ` : ''}
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function updateMetricsBanner() {
+            let totalQuoted = 0;
+            let totalSold = 0;
+            let totalCollected = 0;
+            let totalPending = 0;
+
+            appState.quotes.forEach(q => {
+                totalQuoted += q.product.sellingPrice;
+            });
+
+            appState.sales.forEach(s => {
+                totalSold += s.product.sellingPrice;
+                totalCollected += s.totalPaid;
+                totalPending += s.remainingBalance;
+            });
+
+            document.getElementById('metric-total-quoted').textContent = formatCurrency(totalQuoted);
+            document.getElementById('metric-total-sold').textContent = formatCurrency(totalSold);
+            document.getElementById('metric-total-collected').textContent = formatCurrency(totalCollected);
+            document.getElementById('metric-total-pending').textContent = formatCurrency(totalPending);
+        }
+
+        /* ==========================================================================
+           8. VISTA DE IMPRESIÓN / DOCUMENTO FORMAL DE COTIZACIÓN
+           ========================================================================== */
+        function printQuote(quoteId) {
+            const quote = appState.quotes.find(q => q.id === quoteId) || appState.sales.find(s => s.id === quoteId);
+            if (!quote) return;
+
+            const printContainer = document.getElementById('print-document-content');
+            
+            printContainer.innerHTML = `
+                <div class="print-header">
+                    <div>
+                        <div style="font-size: 1.8rem; font-weight: 800; color: #1e293b;">NOVCOM</div>
+                        <div style="font-size: 0.8rem; color: #64748b; font-weight: 600;">ENTERPRISE TECHNOLOGY & FINANCIAL SOLUTIONS</div>
+                    </div>
+                    <div class="print-meta">
+                        <div class="print-title">COTIZACIÓN COMERCIAL</div>
+                        <div><strong>Código:</strong> ${quote.id}</div>
+                        <div><strong>Fecha de Emisión:</strong> ${formatDate(quote.createdAt || quote.saleDate)}</div>
+                        <div><strong>Ejecutivo de Ventas:</strong> ${escapeHtml(quote.executive)}</div>
+                    </div>
+                </div>
+
+                <div class="print-grid">
+                    <div class="print-box">
+                        <h4>DATOS DEL CLIENTE</h4>
+                        <div><strong>Cliente:</strong> ${escapeHtml(quote.client.name)}</div>
+                        <div><strong>Empresa:</strong> ${escapeHtml(quote.client.company)}</div>
+                        <div><strong>RUC/DNI:</strong> ${escapeHtml(quote.client.idNumber)}</div>
+                        <div><strong>Email:</strong> ${escapeHtml(quote.client.email)}</div>
+                    </div>
+                    <div class="print-box">
+                        <h4>CONDICIONES COMERCIALES</h4>
+                        <div><strong>Modalidad:</strong> ${quote.financing.isFinanced ? 'Financiado en Cuotas' : 'Pago al Contado'}</div>
+                        <div><strong>Moneda:</strong> USD ($) / Soles (S/.)</div>
+                        <div><strong>Validez de Oferta:</strong> 15 Días Calendario</div>
+                    </div>
+                </div>
+
+                <h4>DETALLE DEL PRODUCTO / SERVICIO</h4>
+                <table class="print-table">
+                    <thead>
+                        <tr>
+                            <th>Ítem / Descripción</th>
+                            <th class="text-right">Precio de Venta Base</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>${escapeHtml(quote.product.name)}</td>
+                            <td class="text-right" style="font-weight:700;">${formatCurrency(quote.product.sellingPrice)}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                ${quote.financing.isFinanced ? `
+                    <h4>CRONOGRAMA ESTIMADO DE AMORTIZACIÓN Y PAGOS</h4>
+                    <table class="print-table">
+                        <thead>
+                            <tr>
+                                <th>N° Cuota</th>
+                                <th>Capital Amortizado</th>
+                                <th>Interés</th>
+                                <th>Cuota Total</th>
+                                <th>Saldo Restante</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${quote.financing.schedule.map(s => `
+                                <tr>
+                                    <td>Cuota ${s.period}</td>
+                                    <td>${formatCurrency(s.amortizedCapital)}</td>
+                                    <td>${formatCurrency(s.interest)}</td>
+                                    <td style="font-weight:700;">${formatCurrency(s.installmentTotal)}</td>
+                                    <td>${formatCurrency(s.remainingBalance)}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                ` : ''}
+
+                <div style="margin-top: 3rem; display: flex; justify-content: space-between; text-align: center; font-size: 0.85rem;">
+                    <div style="border-top: 1px solid #cbd5e1; width: 200px; padding-top: 0.5rem;">
+                        Firma Cliente Aceptado
+                    </div>
+                    <div style="border-top: 1px solid #cbd5e1; width: 200px; padding-top: 0.5rem;">
+                        Ejecutivo Novcom
+                    </div>
+                </div>
+            `;
+
+            openModal('modal-print-view');
+        }
+
+        /* ==========================================================================
+           9. FUNCIONES DE UTILIDAD Y MODALES
+           ========================================================================== */
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                minimumFractionDigits: 2
+            }).format(amount || 0);
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return 'N/A';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('es-ES', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+    </script>
+</body>
+</html>
